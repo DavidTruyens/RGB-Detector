@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "Adafruit_NeoPixel.h"
+#include "Adafruit_AS726x.h"
 
 #define PowerPIN 11
 #define NeoPIN 12
