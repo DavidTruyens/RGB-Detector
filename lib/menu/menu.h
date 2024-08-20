@@ -4,7 +4,7 @@
 #include "settings.h"
 
 extern uLog theLog;
-extern settings theSettings;
+// extern settings theSettings;
 
 enum class MenuOption {
     SET_RUNNING_COLOR,
@@ -14,6 +14,7 @@ enum class MenuOption {
     SET_GREEN_DEVIATION,
     SET_BLUE_DEVIATION,
     HELP,
+    TOGGLE_RGB_OUTPUT,
     UNKNOWN
 };
 
@@ -27,5 +28,7 @@ class menu {
     int checkIncomingByte(char incomingByte);
     char buffer[20];
     bool validBuffer = false;
-    int bufferIndex = 0;
+    int bufferIndex  = 0;
+    void processBuffer();
+    void executeOption();
 };

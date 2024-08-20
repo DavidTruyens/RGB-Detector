@@ -68,6 +68,7 @@ void settings::dump() {
     theLog.snprintf(subSystem::general, loggingLevel::Debug, "Idle RGB: %d %d %d", theConfig.idleRGB[0], theConfig.idleRGB[1], theConfig.idleRGB[2]);
     theLog.snprintf(subSystem::general, loggingLevel::Debug, "RunningColor: %s", printColors(theConfig.runningColor));
     theLog.snprintf(subSystem::general, loggingLevel::Debug, "Running RGB: %d %d %d", theConfig.runningRGB[0], theConfig.runningRGB[1], theConfig.runningRGB[2]);
+    theLog.snprintf(subSystem::general, loggingLevel::Debug, "RGBoutput: %s", theConfig.RGBoutput ? "true" : "false");
 }
 
 void settings::writeSettings(const char *path, Config &aConfig) {

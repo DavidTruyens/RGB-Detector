@@ -24,15 +24,8 @@ I2Cdev i2c_0(&I2C_BUS);               // Instantiate the I2Cdev object and point
 APDS9253 theRGBSensor(&i2c_0);        // Instantiate APDS9253 light sensor
 
 bool outputToSerial(const char* aText);
-
-uint8_t RGB_mode = RGBiR;        // Choice is ALSandIR (green and IR channels only) or RGBiR for all four channels
-// rate has to be slower than ADC settle time defines by resolution
-//  Bright sunlight is maximum ~25 klux so choose gain of 6x and minimum resolution (16 bits)
-//  that allows ~24 klux maximum to be measured;  a 1 Hz rate costs ~114 uA * 25/1000 ~ 3 uA
-uint8_t LS_res        = res18bit;            // Choices are res20bit (400 ms), res19bit, res18bit (100 ms, default), res17bit, res16bit (25 ms).
-uint8_t LS_rate       = rate1Hz;             // Choices are rate40Hz (25 ms), rate20Hz, rate10Hz (100 ms, default), rate5Hz, rate2_5Hz (400 ms), rate1Hz, rate0_5Hz
-uint8_t LS_gain       = gain6;               // Choices are gain1, gain3 (default), gain6, gain9, gain18
-uint32_t RGBiRData[4] = {0, 0, 0, 0};        // red, green, blue, ir counts
+void sensorStart();
+void sensorLoop();
 
 void setup() {
     Serial.begin(115200);
@@ -42,7 +35,32 @@ void setup() {
     theLog.setColoredOutput(0U, true);
     theLog.setIncludeTimestamp(0U, true);
     theLog.log(subSystem::general, loggingLevel::Debug, "Starting up");
+    
+    sensorStart();
 
+    // theSettings.begin();
+    // theSettings.dump();
+}
+
+void loop() {
+    theMenu.run();
+    //sensorLoop();
+}
+
+bool outputToSerial(const char* aText) {
+    Serial.print(aText);
+    return true;
+}
+
+uint8_t RGB_mode = RGBiR;        // Choice is ALSandIR (green and IR channels only) or RGBiR for all four channels
+// rate has to be slower than ADC settle time defines by resolution
+//  Bright sunlight is maximum ~25 klux so choose gain of 6x and minimum resolution (16 bits)
+//  that allows ~24 klux maximum to be measured;  a 1 Hz rate costs ~114 uA * 25/1000 ~ 3 uA
+uint8_t LS_res  = res18bit;        // Choices are res20bit (400 ms), res19bit, res18bit (100 ms, default), res17bit, res16bit (25 ms).
+uint8_t LS_rate = rate1Hz;         // Choices are rate40Hz (25 ms), rate20Hz, rate10Hz (100 ms, default), rate5Hz, rate2_5Hz (400 ms), rate1Hz, rate0_5Hz
+uint8_t LS_gain = gain6;           // Choices are gain1, gain3 (default), gain6, gain9, gain18
+
+void sensorStart() {
     I2C_BUS.begin();
     delay(1000);
     I2C_BUS.setClock(400000);
@@ -80,19 +98,15 @@ void setup() {
         if (APDS9253_ID != 0xC2) Serial.println(" APDS9253 not functioning!");
     }
 
-    theRGBSensor.enable();        
-   // theSettings.begin();
-   // theSettings.dump();
+    theRGBSensor.enable();
 }
-
 
 unsigned long lastTime = 0;
 unsigned long interval = 100;
+uint32_t RGBiRData[4]  = {0, 0, 0, 0};        // red, green, blue, ir counts
 
-void loop() {
-    //theMenu.run();
-
-    if (millis() - lastTime > interval) {
+void sensorLoop(){
+     if (millis() - lastTime > interval) {
         lastTime       = millis();
         uint8_t status = theRGBSensor.getStatus();
         // theLog.snprintf(subSystem::mainController, loggingLevel::Debug, "Status = 0x%02X", status);
@@ -102,11 +116,6 @@ void loop() {
             theLog.snprintf(subSystem::mainController, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRData[0], RGBiRData[1], RGBiRData[2], RGBiRData[3]);
         }
     }
-}
-
-bool outputToSerial(const char* aText) {
-    Serial.print(aText);
-    return true;
 }
 
 void ledSetup() {

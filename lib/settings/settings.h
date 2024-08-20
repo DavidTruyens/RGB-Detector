@@ -34,6 +34,7 @@ struct Config {
     Color idleColor    = Color::black;
     int runningRGB[3]  = {255, 0, 255};
     int idleRGB[3]     = {0, 0, 0};
+    bool RGBoutput     = true;
 };
 ;
 
