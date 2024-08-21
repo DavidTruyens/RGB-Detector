@@ -2,6 +2,7 @@
 
 #include <LittleFS_Mbed_RP2040.h>
 #include "logging.h"
+#include "variables.h"
 
 extern uLog theLog;
 
@@ -14,30 +15,6 @@ extern uLog theLog;
 
 #define FORCE_REFORMAT false
 
-enum Color {
-    pink,
-    red,
-    green,
-    blue,
-    yellow,
-    white,
-    black,
-    orange,
-    purple,
-    cyan
-};
-
-struct Config {
-    int RDeviation     = 10;
-    int GDeviation     = 10;
-    int BDeviation     = 10;
-    Color runningColor = Color::pink;
-    Color idleColor    = Color::black;
-    int runningRGB[3]  = {255, 0, 255};
-    int idleRGB[3]     = {0, 0, 0};
-    bool RGBoutput     = true;
-};
-;
 
 class settings {
   public:

@@ -8,6 +8,13 @@
 extern uLog theLog;
 extern TwoWire I2C_BUS;
 
+struct RGBiRData {
+    uint32_t R;
+    uint32_t G;
+    uint32_t B;
+    uint32_t IR;
+};
+
 class RGBiRSensor {
   public:
     RGBiRSensor(TwoWire& i2cBus, I2Cdev* i2cDev);
@@ -16,12 +23,16 @@ class RGBiRSensor {
     uint8_t getChipID();
     void enable();
     void toggleOutput();
+    // create a function to return the RGBiRData struct
+    
+    RGBiRData getRGBiRData();
 
   private:
     APDS9253 theRGBSensor;
+    RGBiRData theData;
     unsigned long lastTime;
     unsigned long _interval;
-    uint32_t RGBiRData[4];
+    uint32_t RGBiRValues[4];
     I2Cdev* i2c;
     TwoWire& I2C_BUS;
 

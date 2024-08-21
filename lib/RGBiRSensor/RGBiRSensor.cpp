@@ -33,12 +33,21 @@ void RGBiRSensor::run() {
         lastTime       = millis();
         uint8_t status = theRGBSensor.getStatus();
         if (status & 0x08) {
-            theRGBSensor.getRGBiRdata(RGBiRData);
+            theRGBSensor.getRGBiRdata(RGBiRValues);
+            theData.R = RGBiRValues[0];
+            theData.G = RGBiRValues[1];
+            theData.B = RGBiRValues[2];
+            theData.IR = RGBiRValues[3];
+
             if (RGBoutput) {
-                theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRData[0], RGBiRData[1], RGBiRData[2], RGBiRData[3]);
+                theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRValues[0], RGBiRValues[1], RGBiRValues[2], RGBiRValues[3]);
             }
         }
     }
+}
+
+RGBiRData RGBiRSensor::getRGBiRData() {
+    return theData;
 }
 
 uint8_t RGBiRSensor::getChipID() {
