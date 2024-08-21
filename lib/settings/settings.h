@@ -8,10 +8,11 @@ extern uLog theLog;
 #define LFS_MBED_RP2040_VERSION_MIN_TARGET "LittleFS_Mbed_RP2040 v1.1.0"
 #define LFS_MBED_RP2040_VERSION_MIN 1001000
 
-#define _LFS_LOGLEVEL_ 1
+#define _LFS_LOGLEVEL_ 0
+#define LFS_MBED_RP2040_DEBUG 1
 #define RP2040_FS_SIZE_KB 64
 
-#define FORCE_REFORMAT false
+#define FORCE_REFORMAT true
 
 enum Color {
     pink,

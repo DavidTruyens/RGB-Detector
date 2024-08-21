@@ -15,6 +15,7 @@ class RGBiRSensor {
     void run();
     uint8_t getChipID();
     void enable();
+    void toggleOutput();
 
   private:
     APDS9253 theRGBSensor;
@@ -23,6 +24,8 @@ class RGBiRSensor {
     uint32_t RGBiRData[4];
     I2Cdev* i2c;
     TwoWire& I2C_BUS;
+
+    bool RGBoutput = true;
 
     uint8_t RGB_mode = RGBiR;        // Choice is ALSandIR (green and IR channels only) or RGBiR for all four channels
     // rate has to be slower than ADC settle time defines by resolution

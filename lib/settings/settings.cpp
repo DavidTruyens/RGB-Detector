@@ -43,8 +43,10 @@ void settings::begin() {
     myFS = new LittleFS_MBED();
 
     if (!myFS->init()) {
-        Serial.println("LITTLEFS Mount Failed");
+        theLog.output(subSystem::filesystem, loggingLevel::Error, "LITTLEFS mount Failed");
         return;
+    } else {
+        theLog.output(subSystem::filesystem, loggingLevel::Debug, "LITTLEFS mount Success");
     }
 
     FILE *file = fopen(settingsPath, "r");

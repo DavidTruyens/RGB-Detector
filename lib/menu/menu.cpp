@@ -1,5 +1,6 @@
 #include "menu.h"
 #include <Arduino.h>
+#include "RGBiRSensor.h"
 
 menu::menu(/* args */) {
 }
@@ -22,9 +23,6 @@ void menu::run() {
 }
 
 void menu::processBuffer() {
-    // Clear previous option
-    theOption = MenuOption::UNKNOWN;
-
     // Determine the option based on the first character in the buffer
     switch (buffer[0]) {
         case 'r':
@@ -95,6 +93,11 @@ void menu::executeOption() {
             Serial.println("B - Set blue deviation");
             Serial.println("t - Toggle RGB output");
             Serial.println("h - Help");
+            theOption = MenuOption::UNKNOWN;
+            break;
+        case MenuOption::TOGGLE_RGB_OUTPUT:
+            theSensor.toggleOutput();
+            theOption = MenuOption::UNKNOWN;
             break;
         default:
             Serial.println("Unknown option");

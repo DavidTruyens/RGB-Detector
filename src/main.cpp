@@ -34,12 +34,12 @@ void setup() {
     theLog.log(subSystem::general, loggingLevel::Debug, "Starting up");
 
     theSensor.begin(500);
-    //theSettings.begin();
-    //theSettings.dump();
+    theSettings.begin();
+    // theSettings.dump();
 }
 
 void loop() {
-    //theMenu.run();
+    theMenu.run();
     theSensor.run();
 }
 

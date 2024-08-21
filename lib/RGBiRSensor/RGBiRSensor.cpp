@@ -1,9 +1,8 @@
 #include "RGBiRSensor.h"
 #include "Arduino.h"
 
-RGBiRSensor::RGBiRSensor(TwoWire &i2cBus, I2Cdev* i2cDev): I2C_BUS(i2cBus), i2c(i2cDev), theRGBSensor(i2cDev) {
+RGBiRSensor::RGBiRSensor(TwoWire& i2cBus, I2Cdev* i2cDev) : I2C_BUS(i2cBus), i2c(i2cDev), theRGBSensor(i2cDev) {
 }
-
 
 void RGBiRSensor::begin(unsigned long interval) {
     _interval = interval;
@@ -35,7 +34,9 @@ void RGBiRSensor::run() {
         uint8_t status = theRGBSensor.getStatus();
         if (status & 0x08) {
             theRGBSensor.getRGBiRdata(RGBiRData);
-            theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d",RGBiRData[0], RGBiRData[1], RGBiRData[2], RGBiRData[3]);
+            if (RGBoutput) {
+                theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRData[0], RGBiRData[1], RGBiRData[2], RGBiRData[3]);
+            }
         }
     }
 }
@@ -46,4 +47,8 @@ uint8_t RGBiRSensor::getChipID() {
 
 void RGBiRSensor::enable() {
     theRGBSensor.enable();
+}
+
+void RGBiRSensor::toggleOutput() {
+    RGBoutput = !RGBoutput;
 }

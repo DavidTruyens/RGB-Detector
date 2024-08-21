@@ -2,8 +2,10 @@
 
 #include "logging.h"
 #include "settings.h"
+#include "RGBiRSensor.h"
 
 extern uLog theLog;
+extern RGBiRSensor theSensor;
 // extern settings theSettings;
 
 enum class MenuOption {
