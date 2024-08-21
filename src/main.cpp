@@ -31,11 +31,11 @@ void setup() {
     theLog.setLoggingLevel(0U, loggingLevel::Debug);
     theLog.setColoredOutput(0U, true);
     theLog.setIncludeTimestamp(0U, true);
-    theLog.log(subSystem::general, loggingLevel::Debug, "Starting up");
+    theLog.output(subSystem::general, loggingLevel::Debug, "Starting up");
 
     theSensor.begin(500);
     theSettings.begin();
-    // theSettings.dump();
+    theSettings.dump();
 }
 
 void loop() {
