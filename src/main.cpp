@@ -30,7 +30,7 @@ void setup() {
     Serial.println("Starting up");
 
     theLog.setOutput(0U, outputToSerial);
-    theLog.setLoggingLevel(0U, loggingLevel::Debug);
+    theLog.setLoggingLevel(0U, loggingLevel::Info);
     theLog.setColoredOutput(0U, true);
     theLog.setIncludeTimestamp(0U, true);
     theLog.output(subSystem::general, loggingLevel::Debug, "Starting up");

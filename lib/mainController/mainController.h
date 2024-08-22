@@ -23,12 +23,13 @@ class mainController {
     void run(RGBiRData theData);
     void configureState(MainStates aState, Color aColor);
     void configureDeviation(Color aColor, int deviation);
+    void updateBreatheIncrement(int newBrightness);
 
   private:
     MainStates theMainState = MainStates::UNKNOWN;
     MainStates theNewState  = MainStates::UNKNOWN;
     Adafruit_NeoPixel neoled;
-    void standbyLED();
+    void breatheLED();
     void setLEDcolor(Color theColor);
     void checkRGBvalues(RGBiRData theData);
     bool compareRGB(RGBiRData theData, unsigned long targetRGB[3]);
@@ -37,7 +38,10 @@ class mainController {
 
     const ColorValues theColorValues;
 
-    unsigned long lastMillis      = 0;
-    unsigned long standbyInterval = 1000;
-    bool ledState                 = false;
+    unsigned long breatheInterval = 30;
+    int steps                     = 100;        // Steps between 0 and 255
+    int breatheBrightness         = 0;          // Current breatheBrightness level
+    int fadeAmount                = 5;          // Amount by which breatheBrightness changes
+    int currentFadeAmount         = fadeAmount;
+    unsigned long lastMillis      = 0;        // Last update time
 };

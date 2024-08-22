@@ -44,5 +44,7 @@ void variables::printConfig(Config &aConfig){
     theLog.snprintf(subSystem::general, loggingLevel::Info, "Idle RGB: %d, %d, %d", aConfig.idleRGB[0], aConfig.idleRGB[1], aConfig.idleRGB[2]);
     theLog.snprintf(subSystem::general, loggingLevel::Info, "Warning RGB: %d, %d, %d", aConfig.warningRGB[0], aConfig.warningRGB[1], aConfig.warningRGB[2]);
     theLog.snprintf(subSystem::general, loggingLevel::Info, "Alarm RGB: %d, %d, %d", aConfig.alarmRGB[0], aConfig.alarmRGB[1], aConfig.alarmRGB[2]);
+    theLog.snprintf(subSystem::general, loggingLevel::Info, "Deviations: R: %d, G: %d, B: %d", aConfig.RDeviation, aConfig.GDeviation, aConfig.BDeviation);
     
+
 }

@@ -20,10 +20,13 @@ std::map<std::string, Color> menu::colorMap = {
 std::map<std::string, MenuOption> menu::optionMap = {
     {"r", MenuOption::SET_RUNNING_COLOR},
     {"i", MenuOption::SET_IDLE_COLOR},
+    {"a", MenuOption::SET_ALARM_COLOR},
+    {"w", MenuOption::SET_WARNING_COLOR},
     {"g", MenuOption::SET_GLOBAL_DEVIATION},
     {"R", MenuOption::SET_RED_DEVIATION},
     {"G", MenuOption::SET_GREEN_DEVIATION},
     {"B", MenuOption::SET_BLUE_DEVIATION},
+    {"b", MenuOption::SET_BRIGHTNESS},
     {"h", MenuOption::HELP},
     {"t", MenuOption::TOGGLE_RGB_OUTPUT}
     // Add more mappings as needed
@@ -45,11 +48,23 @@ void menu::run() {
 
             if (theOption == MenuOption::UNKNOWN) {
                 processMenu(key);
-            } else {
+            } else if (theOption == MenuOption::SET_IDLE_COLOR || theOption == MenuOption::SET_RUNNING_COLOR || theOption == MenuOption::SET_WARNING_COLOR || theOption == MenuOption::SET_ALARM_COLOR) {
                 processColor(key);
-            }
+            } else if (theOption == MenuOption::SET_GLOBAL_DEVIATION || theOption == MenuOption::SET_RED_DEVIATION || theOption == MenuOption::SET_GREEN_DEVIATION || theOption == MenuOption::SET_BLUE_DEVIATION || theOption == MenuOption::SET_BRIGHTNESS) {
+                char* end;
+                // Convert string to unsigned long
+                unsigned long value = strtoul(key.c_str(), &end, 10);
 
-            // Process the buffer content
+                // Check if the entire string was converted
+                if (*end == '\0') {
+                    theLog.snprintf(subSystem::general, loggingLevel::Info, "Conversion successful: %lu", value);
+                    executeUnsignedLong(value, theOption);
+                } else {
+                    theLog.snprintf(subSystem::general, loggingLevel::Error, "Conversion failed: %s", key.c_str());
+                }
+            } else {
+                theLog.snprintf(subSystem::general, loggingLevel::Error, "Unknown option");
+            }
         }
     }
 }
@@ -84,40 +99,54 @@ void menu::executeMenuOption(MenuOption option) {
             Serial.println("Set running color");
             printColorOptions();
             theOption = MenuOption::SET_RUNNING_COLOR;
-            // Perform actions to set the running color
             break;
         case MenuOption::SET_IDLE_COLOR:
             Serial.println("Set idle color");
+            printColorOptions();
             theOption = MenuOption::SET_IDLE_COLOR;
-            // Perform actions to set the idle color
+            break;
+        case MenuOption::SET_WARNING_COLOR:
+            Serial.println("Set warning color");
+            printColorOptions();
+            theOption = MenuOption::SET_WARNING_COLOR;
+            break;
+        case MenuOption::SET_ALARM_COLOR:
+            Serial.println("Set alarm color");
+            printColorOptions();
+            theOption = MenuOption::SET_ALARM_COLOR;
             break;
         case MenuOption::SET_GLOBAL_DEVIATION:
             Serial.println("Set global deviation");
             theOption = MenuOption::SET_GLOBAL_DEVIATION;
-            // Perform actions to set the global deviation
             break;
         case MenuOption::SET_RED_DEVIATION:
             Serial.println("Set red deviation");
             theOption = MenuOption::SET_RED_DEVIATION;
-            // Perform actions to set the red deviation
             break;
         case MenuOption::SET_GREEN_DEVIATION:
             Serial.println("Set green deviation");
             theOption = MenuOption::SET_GREEN_DEVIATION;
-            // Perform actions to set the green deviation
             break;
         case MenuOption::SET_BLUE_DEVIATION:
             Serial.println("Set blue deviation");
             theOption = MenuOption::SET_BLUE_DEVIATION;
-            // Perform actions to set the blue deviation
             break;
+
+        case MenuOption::SET_BRIGHTNESS:
+            Serial.println("Set brightness as a value between 0 and 255");
+            theOption = MenuOption::SET_BRIGHTNESS;
+            break;
+
         case MenuOption::HELP:
             Serial.println("r - Set running color");
             Serial.println("i - Set idle color");
+            Serial.println("a - Set alarm color");
+            Serial.println("w - Set warning color");
             Serial.println("g - Set global deviation");
             Serial.println("R - Set red deviation");
             Serial.println("G - Set green deviation");
             Serial.println("B - Set blue deviation");
+            Serial.println("b - Set brightness");
             Serial.println("t - Toggle RGB output");
             Serial.println("h - Help");
             theOption = MenuOption::UNKNOWN;
@@ -139,33 +168,55 @@ void menu::executeColor(Color aColor) {
             break;
 
         case MenuOption::SET_IDLE_COLOR:
+            theController.configureState(MainStates::IDLE, aColor);
+            break;
+        case MenuOption::SET_WARNING_COLOR:
+            theController.configureState(MainStates::WARNING, aColor);
+            break;
+        case MenuOption::SET_ALARM_COLOR:
+            theController.configureState(MainStates::ALARM, aColor);
+            break;
         case MenuOption::SET_GLOBAL_DEVIATION:
         case MenuOption::SET_RED_DEVIATION:
         case MenuOption::SET_GREEN_DEVIATION:
         case MenuOption::SET_BLUE_DEVIATION:
-
-
+            theLog.snprintf(subSystem::general, loggingLevel::Error, "Invalid state to receive a color");
+            break;
         default:
             break;
     }
     theOption = MenuOption::UNKNOWN;
 }
 
-void menu::executeDeviation(int deviation) {
+void menu::executeUnsignedLong(unsigned long value, MenuOption anOption) {
     switch (theOption) {
+        case MenuOption::SET_RUNNING_COLOR:
+        case MenuOption::SET_IDLE_COLOR:
+        case MenuOption::SET_WARNING_COLOR:
+        case MenuOption::SET_ALARM_COLOR:
+            theLog.snprintf(subSystem::general, loggingLevel::Error, "Invalid state to receive a deviation");
+            break;
         case MenuOption::SET_GLOBAL_DEVIATION:
-            theController.configureDeviation(Color::unknown, deviation);
+            theConfig.RDeviation = value;
+            theConfig.GDeviation = value;
+            theConfig.BDeviation = value;
             break;
         case MenuOption::SET_RED_DEVIATION:
-            theController.configureDeviation(Color::red, deviation);
+            theConfig.RDeviation = value;
             break;
-        case MenuOption::SET_GREEN_DEVIATION:    
-            theController.configureDeviation(Color::green, deviation);
+        case MenuOption::SET_GREEN_DEVIATION:
+            theConfig.GDeviation = value;
             break;
-        case MenuOption::SET_BLUE_DEVIATION:    
-            theController.configureDeviation(Color::blue, deviation);
+        case MenuOption::SET_BLUE_DEVIATION:
+            theConfig.BDeviation = value;
+            break;
+        case MenuOption::SET_BRIGHTNESS:
+            theConfig.brightness = value;
+            theController.updateBreatheIncrement(value);
             break;
     }
+    theOption = MenuOption::UNKNOWN;
+    theVariables.printConfig(theConfig);
 }
 
 void menu::printColorOptions() {

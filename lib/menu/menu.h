@@ -18,10 +18,13 @@ extern variables theVariables;
 enum class MenuOption {
     SET_RUNNING_COLOR,
     SET_IDLE_COLOR,
+    SET_WARNING_COLOR,
+    SET_ALARM_COLOR,
     SET_GLOBAL_DEVIATION,
     SET_RED_DEVIATION,
     SET_GREEN_DEVIATION,
     SET_BLUE_DEVIATION,
+    SET_BRIGHTNESS,
     HELP,
     TOGGLE_RGB_OUTPUT,
     UNKNOWN
@@ -42,7 +45,7 @@ class menu {
     void processColor(const std::string& colorStr);
     void executeMenuOption(MenuOption option);
     void executeColor(Color aColor);
-    void executeDeviation(int deviation);
+    void executeUnsignedLong(unsigned long deviation, MenuOption anOption);
     void printColorOptions();
 
       // Declare static maps

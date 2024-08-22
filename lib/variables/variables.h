@@ -26,6 +26,7 @@ struct Config {
     unsigned long idleRGB[3]    = {0, 0, 0};
     unsigned long warningRGB[3] = {255, 165, 0};
     unsigned long alarmRGB[3]   = {255, 0, 0};
+    unsigned long brightness     = 255;
 };
 
 struct ColorValues {

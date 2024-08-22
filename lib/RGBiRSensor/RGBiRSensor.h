@@ -36,7 +36,7 @@ class RGBiRSensor {
     I2Cdev* i2c;
     TwoWire& I2C_BUS;
 
-    bool RGBoutput = true;
+    bool RGBoutput = false;
 
     uint8_t RGB_mode = RGBiR;        // Choice is ALSandIR (green and IR channels only) or RGBiR for all four channels
     // rate has to be slower than ADC settle time defines by resolution

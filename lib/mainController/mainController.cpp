@@ -34,7 +34,7 @@ void mainController::run(RGBiRData theData) {
         case MainStates::ALARM:
             break;
         case MainStates::UNKNOWN:
-            standbyLED();
+            breatheLED();
             break;
         default:
             theLog.output(subSystem::mainController, loggingLevel::Error, "Unknown state");
@@ -107,6 +107,26 @@ void mainController::configureState(MainStates aState, Color aColor) {
             theConfig.runningRGB[2] = theData.B;
             theConfig.runningColor  = aColor;
             break;
+        case MainStates::IDLE:
+            theConfig.idleRGB[0] = theData.R;
+            theConfig.idleRGB[1] = theData.G;
+            theConfig.idleRGB[2] = theData.B;
+            theConfig.idleColor  = aColor;
+            break;
+
+        case MainStates::WARNING:
+            theConfig.warningRGB[0] = theData.R;
+            theConfig.warningRGB[1] = theData.G;
+            theConfig.warningRGB[2] = theData.B;
+            theConfig.warningColor  = aColor;
+            break;
+
+        case MainStates::ALARM:
+            theConfig.alarmRGB[0] = theData.R;
+            theConfig.alarmRGB[1] = theData.G;
+            theConfig.alarmRGB[2] = theData.B;
+            theConfig.alarmColor  = aColor;
+            break;
 
         default:
             break;
@@ -118,58 +138,98 @@ void mainController::configureDeviation(Color aColor, int deviation) {
     theLog.output(subSystem::mainController, loggingLevel::Debug, "Configuring deviation arrived");
 }
 
-void mainController::standbyLED() {
-    if (millis() - lastMillis > standbyInterval) {
-        lastMillis = millis();
-        ledState   = !ledState;
-        if (ledState) {
-            neoled.setPixelColor(0, neoled.Color(255, 0, 0));
-        } else {
-            neoled.setPixelColor(0, neoled.Color(0, 0, 0));
-        }
+void mainController::updateBreatheIncrement(int newBrightness) {
+    fadeAmount = newBrightness / steps;
+    if (fadeAmount == 0) {
+        fadeAmount = 1;
     }
-    neoled.show();
+
+    breatheBrightness = 0;
+}
+
+void mainController::breatheLED() {
+    if (millis() - lastMillis > breatheInterval) {
+        lastMillis = millis();
+
+        // Reverse the direction of the fade at the ends of the fade range
+        if (breatheBrightness <= 0) {
+            currentFadeAmount = fadeAmount;
+        } else if (breatheBrightness >= theConfig.brightness) {
+            currentFadeAmount = -fadeAmount;
+        }
+
+        // Update brightness level
+        breatheBrightness += currentFadeAmount;
+
+        // Set the LED color with the updated brightness
+        neoled.setPixelColor(0, neoled.Color(breatheBrightness, breatheBrightness, breatheBrightness));        // Red color with current brightness
+        neoled.show();
+    }
 }
 
 void mainController::setLEDcolor(Color theColor) {
+    unsigned long ledRGBvalues[3] = {0, 0, 0};
     switch (theColor) {
         case Color::pink:
-            neoled.setPixelColor(0, theColorValues.pink[0], theColorValues.pink[1], theColorValues.pink[2]);
+            ledRGBvalues[0] = theColorValues.pink[0];
+            ledRGBvalues[1] = theColorValues.pink[1];
+            ledRGBvalues[2] = theColorValues.pink[2];
             break;
         case Color::red:
-            neoled.setPixelColor(0, theColorValues.red[0], theColorValues.red[1], theColorValues.red[2]);
+            ledRGBvalues[0] = theColorValues.red[0];
+            ledRGBvalues[1] = theColorValues.red[1];
+            ledRGBvalues[2] = theColorValues.red[2];
             break;
         case Color::green:
-            neoled.setPixelColor(0, theColorValues.green[0], theColorValues.green[1], theColorValues.green[2]);
+            ledRGBvalues[0] = theColorValues.green[0];
+            ledRGBvalues[1] = theColorValues.green[1];
+            ledRGBvalues[2] = theColorValues.green[2];
             break;
         case Color::blue:
-            neoled.setPixelColor(0, theColorValues.blue[0], theColorValues.blue[1], theColorValues.blue[2]);
+            ledRGBvalues[0] = theColorValues.blue[0];
+            ledRGBvalues[1] = theColorValues.blue[1];
+            ledRGBvalues[2] = theColorValues.blue[2];
             break;
         case Color::yellow:
-            neoled.setPixelColor(0, theColorValues.yellow[0], theColorValues.yellow[1], theColorValues.yellow[2]);
+            ledRGBvalues[0] = theColorValues.yellow[0];
+            ledRGBvalues[1] = theColorValues.yellow[1];
+            ledRGBvalues[2] = theColorValues.yellow[2];
             break;
         case Color::white:
-            neoled.setPixelColor(0, theColorValues.white[0], theColorValues.white[1], theColorValues.white[2]);
+            ledRGBvalues[0] = theColorValues.white[0];
+            ledRGBvalues[1] = theColorValues.white[1];
+            ledRGBvalues[2] = theColorValues.white[2];
             break;
         case Color::black:
-            neoled.setPixelColor(0, theColorValues.black[0], theColorValues.black[1], theColorValues.black[2]);
+            ledRGBvalues[0] = theColorValues.black[0];
+            ledRGBvalues[1] = theColorValues.black[1];
+            ledRGBvalues[2] = theColorValues.black[2];
             break;
         case Color::orange:
-            neoled.setPixelColor(0, theColorValues.orange[0], theColorValues.orange[1], theColorValues.orange[2]);
+            ledRGBvalues[0] = theColorValues.orange[0];
+            ledRGBvalues[1] = theColorValues.orange[1];
+            ledRGBvalues[2] = theColorValues.orange[2];
             break;
         case Color::purple:
-            neoled.setPixelColor(0, theColorValues.purple[0], theColorValues.purple[1], theColorValues.purple[2]);
+            ledRGBvalues[0] = theColorValues.purple[0];
+            ledRGBvalues[1] = theColorValues.purple[1];
+            ledRGBvalues[2] = theColorValues.purple[2];
             break;
         case Color::cyan:
-            neoled.setPixelColor(0, theColorValues.cyan[0], theColorValues.cyan[1], theColorValues.cyan[2]);
+            ledRGBvalues[0] = theColorValues.cyan[0];
+            ledRGBvalues[1] = theColorValues.cyan[1];
+            ledRGBvalues[2] = theColorValues.cyan[2];
             break;
-        case Color::unknown:
-            neoled.setPixelColor(0, 0, 0, 0);
-            break;
+
         default:
             theLog.output(subSystem::mainController, loggingLevel::Error, "Unknown color");
             break;
     }
+    uint8_t Rvalue = map(ledRGBvalues[0], 0, 255, 0, theConfig.brightness);
+    uint8_t Gvalue = map(ledRGBvalues[1], 0, 255, 0, theConfig.brightness);
+    uint8_t Bvalue = map(ledRGBvalues[2], 0, 255, 0, theConfig.brightness);
+
+    neoled.setPixelColor(0, Rvalue, Gvalue, Bvalue);
     neoled.show();
 }
 
