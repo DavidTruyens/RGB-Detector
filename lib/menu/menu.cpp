@@ -148,6 +148,7 @@ void menu::executeColor(Color aColor) {
         default:
             break;
     }
+    theOption = MenuOption::UNKNOWN;
 }
 
 void menu::executeDeviation(int deviation) {

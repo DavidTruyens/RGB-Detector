@@ -3,33 +3,6 @@
 settings::settings(/* args */) {
 }
 
-const char *settings::printColors(Color theColor) {
-    switch (theColor) {
-        case Color::pink:
-            return "pink";
-        case Color::red:
-            return "red";
-        case Color::green:
-            return "green";
-        case Color::blue:
-            return "blue";
-        case Color::yellow:
-            return "yellow";
-        case Color::white:
-            return "white";
-        case Color::black:
-            return "black";
-        case Color::orange:
-            return "orange";
-        case Color::purple:
-            return "purple";
-        case Color::cyan:
-            return "cyan";
-        default:
-            return "unknown color";
-    }
-}
-
 void settings::begin() {
     theLog.output(subSystem::filesystem, loggingLevel::Debug, "Start LittleFS_Test on " BOARD_NAME);
     theLog.output(subSystem::filesystem, loggingLevel::Debug, "Version: " LFS_MBED_RP2040_VERSION);
@@ -67,19 +40,6 @@ void settings::begin() {
         theLog.output(subSystem::general, loggingLevel::Warning, "Settings file not found");
         writeSettings(settingsPath, theConfig);
     }
-}
-
-// a function to print all the settings to the general subsystem with a debug level
-void settings::dump() {
-    theLog.output(subSystem::general, loggingLevel::Debug, "Settings:");
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "Rdeviation: %d", theConfig.RDeviation);
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "Gdeviation: %d", theConfig.GDeviation);
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "Bdeviation: %d", theConfig.BDeviation);
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "IdleColor: %s", printColors(theConfig.idleColor));
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "Idle RGB: %d %d %d", theConfig.idleRGB[0], theConfig.idleRGB[1], theConfig.idleRGB[2]);
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "RunningColor: %s", printColors(theConfig.runningColor));
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "Running RGB: %d %d %d", theConfig.runningRGB[0], theConfig.runningRGB[1], theConfig.runningRGB[2]);
-    theLog.snprintf(subSystem::general, loggingLevel::Debug, "RGBoutput: %s", theConfig.RGBoutput ? "true" : "false");
 }
 
 void settings::writeSettings(const char *path, Config &aConfig) {

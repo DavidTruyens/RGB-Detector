@@ -20,6 +20,8 @@ menu theMenu;
 uLog theLog;
 variables theVariables;
 
+Config theConfig;
+
 bool outputToSerial(const char* aText);
 
 void setup() {

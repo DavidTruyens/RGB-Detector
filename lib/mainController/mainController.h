@@ -26,9 +26,16 @@ class mainController {
 
   private:
     MainStates theMainState = MainStates::UNKNOWN;
+    MainStates theNewState  = MainStates::UNKNOWN;
     Adafruit_NeoPixel neoled;
     void standbyLED();
     void setLEDcolor(Color theColor);
+    void checkRGBvalues(RGBiRData theData);
+    bool compareRGB(RGBiRData theData, unsigned long targetRGB[3]);
+    void setOutput(bool aState);
+    void printAMainStates(MainStates aState);
+
+    const ColorValues theColorValues;
 
     unsigned long lastMillis      = 0;
     unsigned long standbyInterval = 1000;
