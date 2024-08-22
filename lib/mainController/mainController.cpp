@@ -1,5 +1,6 @@
 #include "mainController.h"
 #include "RGBiRSensor.h"
+#include "storage.h"
 
 #define PowerPIN 11
 #define NeoPIN 12
@@ -9,6 +10,7 @@ extern uLog theLog;
 extern variables theVariables;
 extern Config theConfig;
 extern RGBiRSensor theSensor;
+extern storage theStorage;
 
 mainController::mainController() : neoled(1, NeoPIN, NEO_GRB + NEO_KHZ800) {
 }
@@ -106,12 +108,14 @@ void mainController::configureState(MainStates aState, Color aColor) {
             theConfig.runningRGB[1] = theData.G;
             theConfig.runningRGB[2] = theData.B;
             theConfig.runningColor  = aColor;
+            theStorage.saveConfig(theConfig);
             break;
         case MainStates::IDLE:
             theConfig.idleRGB[0] = theData.R;
             theConfig.idleRGB[1] = theData.G;
             theConfig.idleRGB[2] = theData.B;
             theConfig.idleColor  = aColor;
+            theStorage.saveConfig(theConfig);
             break;
 
         case MainStates::WARNING:
@@ -119,6 +123,7 @@ void mainController::configureState(MainStates aState, Color aColor) {
             theConfig.warningRGB[1] = theData.G;
             theConfig.warningRGB[2] = theData.B;
             theConfig.warningColor  = aColor;
+            theStorage.saveConfig(theConfig);
             break;
 
         case MainStates::ALARM:
@@ -126,6 +131,7 @@ void mainController::configureState(MainStates aState, Color aColor) {
             theConfig.alarmRGB[1] = theData.G;
             theConfig.alarmRGB[2] = theData.B;
             theConfig.alarmColor  = aColor;
+            theStorage.saveConfig(theConfig);
             break;
 
         default:

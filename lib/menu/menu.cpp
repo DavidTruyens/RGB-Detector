@@ -1,6 +1,9 @@
 #include "menu.h"
 #include <Arduino.h>
 #include "RGBiRSensor.h"
+#include "storage.h"
+
+extern storage theStorage;
 
 // Define the static maps in the corresponding source file
 std::map<std::string, Color> menu::colorMap = {
@@ -194,24 +197,31 @@ void menu::executeUnsignedLong(unsigned long value, MenuOption anOption) {
         case MenuOption::SET_IDLE_COLOR:
         case MenuOption::SET_WARNING_COLOR:
         case MenuOption::SET_ALARM_COLOR:
+        case MenuOption::HELP:
+        case MenuOption::TOGGLE_RGB_OUTPUT:
             theLog.snprintf(subSystem::general, loggingLevel::Error, "Invalid state to receive a deviation");
             break;
         case MenuOption::SET_GLOBAL_DEVIATION:
             theConfig.RDeviation = value;
             theConfig.GDeviation = value;
             theConfig.BDeviation = value;
+            theStorage.saveConfig(theConfig);
             break;
         case MenuOption::SET_RED_DEVIATION:
             theConfig.RDeviation = value;
+            theStorage.saveConfig(theConfig);
             break;
         case MenuOption::SET_GREEN_DEVIATION:
             theConfig.GDeviation = value;
+            theStorage.saveConfig(theConfig);
             break;
         case MenuOption::SET_BLUE_DEVIATION:
             theConfig.BDeviation = value;
+            theStorage.saveConfig(theConfig);
             break;
         case MenuOption::SET_BRIGHTNESS:
             theConfig.brightness = value;
+            theStorage.saveConfig(theConfig);
             theController.updateBreatheIncrement(value);
             break;
     }
