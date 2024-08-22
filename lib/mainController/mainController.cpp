@@ -5,9 +5,9 @@
 #define OUTPUT_PIN 0
 
 extern uLog theLog;
+extern variables theVariables;
 
 mainController::mainController() : neoled(1, NeoPIN, NEO_GRB + NEO_KHZ800) {
-
 }
 
 void mainController::begin() {
@@ -34,6 +34,14 @@ void mainController::run(RGBiRData theData) {
             theLog.output(subSystem::mainController, loggingLevel::Error, "Unknown state");
             break;
     }
+}
+
+void mainController::configureState(MainStates aState, Color aColor) {
+    theLog.snprintf(subSystem::mainController, loggingLevel::Debug, "Configuring state arrived with %s color", theVariables.printColors(aColor));
+}
+
+void mainController::configureDeviation(Color aColor, int deviation) {
+    theLog.output(subSystem::mainController, loggingLevel::Debug, "Configuring deviation arrived");
 }
 
 void mainController::standbyLED() {

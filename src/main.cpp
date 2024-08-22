@@ -18,6 +18,7 @@ mainController theController;
 //settings theSettings;
 menu theMenu;
 uLog theLog;
+variables theVariables;
 
 bool outputToSerial(const char* aText);
 

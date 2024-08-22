@@ -21,6 +21,8 @@ class mainController {
     mainController(/* args */);
     void begin();
     void run(RGBiRData theData);
+    void configureState(MainStates aState, Color aColor);
+    void configureDeviation(Color aColor, int deviation);
 
   private:
     MainStates theMainState = MainStates::UNKNOWN;
