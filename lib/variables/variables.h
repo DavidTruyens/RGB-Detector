@@ -15,6 +15,7 @@ enum Color {
 };
 
 struct Config {
+    unsigned long marker;
     unsigned long RDeviation    = 40;
     unsigned long GDeviation    = 40;
     unsigned long BDeviation    = 40;
@@ -26,7 +27,7 @@ struct Config {
     unsigned long idleRGB[3]    = {0, 0, 0};
     unsigned long warningRGB[3] = {255, 165, 0};
     unsigned long alarmRGB[3]   = {255, 0, 0};
-    unsigned long brightness     = 255;
+    unsigned long brightness    = 255;
 };
 
 struct ColorValues {

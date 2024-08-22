@@ -3,7 +3,7 @@
 #include "mainController.h"
 #include "logging.h"
 #include "RGBiRSensor.h"
-//#include "settings.h"
+#include "storage.h"
 #include "menu.h"
 #include "Wire.h"
 
@@ -15,7 +15,7 @@ I2Cdev i2c_0(&I2C_BUS);
 RGBiRSensor theSensor(I2C_BUS, &i2c_0);
 
 mainController theController;
-//settings theSettings;
+storage theStorage;
 menu theMenu;
 uLog theLog;
 variables theVariables;
@@ -27,7 +27,6 @@ bool outputToSerial(const char* aText);
 void setup() {
     Serial.begin(115200);
     delay(1000);
-    Serial.println("Starting up");
 
     theLog.setOutput(0U, outputToSerial);
     theLog.setLoggingLevel(0U, loggingLevel::Info);
@@ -35,12 +34,16 @@ void setup() {
     theLog.setIncludeTimestamp(0U, true);
     theLog.output(subSystem::general, loggingLevel::Debug, "Starting up");
 
-    Serial.println("Starting up");
-
     theSensor.begin(500);
     theController.begin();
-    //theSettings.begin();
-    //theSettings.dump();
+
+ // Initialize the storage manager and load or create the config
+    theStorage.begin();
+
+    // Access the config for use
+    theConfig = theStorage.getConfig();
+
+    theVariables.printConfig(theConfig);
 }
 
 void loop() {

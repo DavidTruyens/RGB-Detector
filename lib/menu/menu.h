@@ -1,7 +1,6 @@
 #pragma once
 
 #include "logging.h"
-#include "settings.h"
 #include "RGBiRSensor.h"
 #include "variables.h"
 #include "mainController.h"
@@ -13,6 +12,7 @@ extern uLog theLog;
 extern RGBiRSensor theSensor;
 extern mainController theController;
 extern variables theVariables;
+extern Config theConfig;
 // extern settings theSettings;
 
 enum class MenuOption {
