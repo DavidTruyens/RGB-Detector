@@ -40,7 +40,15 @@ void RGBiRSensor::run() {
             theData.IR = RGBiRValues[3];
 
             if (RGBoutput) {
-                theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRValues[0], RGBiRValues[1], RGBiRValues[2], RGBiRValues[3]);
+                Serial.print(" Red ");
+                Serial.print(RGBiRValues[0]);
+                Serial.print(" Green ");
+                Serial.print(RGBiRValues[1]);
+                Serial.print(" Blue ");
+                Serial.print(RGBiRValues[2]);
+                Serial.print(" IR ");
+                Serial.println(RGBiRValues[3]);
+                //theLog.snprintf(subSystem::general, loggingLevel::Info, "R %d, G %d, B %d, IR %d", RGBiRValues[0], RGBiRValues[1], RGBiRValues[2], RGBiRValues[3]);
             }
         }
     }
