@@ -220,9 +220,13 @@ void menu::executeUnsignedLong(unsigned long value, MenuOption anOption) {
             theStorage.saveConfig(theConfig);
             break;
         case MenuOption::SET_BRIGHTNESS:
-            theConfig.brightness = value;
-            theStorage.saveConfig(theConfig);
-            theController.updateBreatheIncrement(value);
+            if (value >= 0 && value <= 255) {
+                theConfig.brightness = value;
+                theStorage.saveConfig(theConfig);
+                theController.updateBreatheIncrement(value);
+            } else {
+                theLog.snprintf(subSystem::general, loggingLevel::Error, "Invalid brightness value");
+            }
             break;
     }
     theOption = MenuOption::UNKNOWN;
